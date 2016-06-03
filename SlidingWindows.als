@@ -1,3 +1,5 @@
+open util/ordering[State]
+
 sig State {
 	windows: set Window
 }
@@ -8,9 +10,14 @@ abstract sig Window {
 }
 sig WZero, WOne, WTwo, WThree, WFour, WFive, WSix, WSeven, WEight extends Window {}
 
-abstract sig Number {}
+abstract sig Number {
+	parent: one Window
+}
 sig One, Two, Three, Four, Five, Six, Seven, Eight extends Number {}
 
+fact ParentItemRelationship {
+	parent = ~item
+}
 
 fact WindowGraph {
 	all s: State| {
@@ -118,4 +125,35 @@ pred show {
 	#State = 1
 }
 
-run show for 9 but 2 State
+run show for 9 but 1 State
+
+// The dynamic parts...
+
+pred crossRiver [board, board': set Window] {
+	// TODO
+}
+
+pred small {
+	some s: State| {
+		one n: One, w: s.windows & WZero| n = w.item
+		one n: Two, w: s.windows & WTwo| n = w.item
+		one n: Three, w: s.windows & WThree| n = w.item
+		one n: Four, w: s.windows & WFour| n = w.item
+		one n: Five, w: s.windows & WFive| n = w.item
+		one n: Six, w: s.windows & WSix| n = w.item
+		one n: Seven, w: s.windows & WSeven| n = w.item
+		one n: Eight, w: s.windows & WEight| n = w.item
+	}
+	some s: State| {
+		one n: One, w: s.windows & WOne| n = w.item
+		one n: Two, w: s.windows & WTwo| n = w.item
+		one n: Three, w: s.windows & WThree| n = w.item
+		one n: Four, w: s.windows & WFour| n = w.item
+		one n: Five, w: s.windows & WFive| n = w.item
+		one n: Six, w: s.windows & WSix| n = w.item
+		one n: Seven, w: s.windows & WSeven| n = w.item
+		one n: Eight, w: s.windows & WEight| n = w.item
+	}
+}
+
+run small for 18 but 2 State
