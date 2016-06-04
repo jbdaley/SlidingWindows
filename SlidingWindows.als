@@ -1,9 +1,6 @@
 // Needed to create an ordering of states, from initial to the solution state
 open util/ordering[State] as ord
 
-// Uncertain if this will be needed
-open util/relation
-
 // An instance of the game board's state
 sig State {
 	windows: set Window,
@@ -171,10 +168,9 @@ pred solvedBoard {
 		one n: Seven, w: s.windows & WSeven| n = w.item
 		one n: Eight, w: s.windows & WEight| n = w.item
 	}
-	#State = 2
 }
 
-run solvedBoard for 18 but 2 State
+run solvedBoard for 9 but 1 State
 
 // The dynamic parts...
 
@@ -218,25 +214,24 @@ fact stateTransition {
 }
 
 // This example should show a sequence of states from the initial board
-/* 1 * 2      * 1 2
-*  3 4 5 -> 3 4 5
-*  6 7 8      6 7 8
+/* 1 2 5    * 1 2
+*  3 4 * -> 3 4 5
+*  6 7 8    6 7 8
 */
 pred smallExample {
-	// Initial state (some state is the initial state)
+	// Initial state is the following "initial" state
 	some s: State| {
-		one w: s.windows & WZero| Eight = w.item
-		one w: s.windows & WOne| One = w.item
-		one w: s.windows & WTwo| Two = w.item
+		one w: s.windows & WZero| One = w.item
+		one w: s.windows & WOne| Two = w.item
+		one w: s.windows & WTwo| Five = w.item
 		one w: s.windows & WThree| Three = w.item
 		one w: s.windows & WFour| Four = w.item
-		one w: s.windows & WFive| Five = w.item
+		one w: s.windows & WFive| none = w.item
 		one w: s.windows & WSix| Six = w.item
 		one w: s.windows & WSeven| Seven = w.item
-		one w: s.windows & WEight| none = w.item
-		ord/first = s
+		one w: s.windows & WEight| Eight = w.item
 	}
-	// solved state (some state is the solved state)
+	// solved state is solved
 	some s: State| {
 		one n: One, w: s.windows & WOne| n = w.item
 		one n: Two, w: s.windows & WTwo| n = w.item
@@ -246,9 +241,7 @@ pred smallExample {
 		one n: Six, w: s.windows & WSix| n = w.item
 		one n: Seven, w: s.windows & WSeven| n = w.item
 		one n: Eight, w: s.windows & WEight| n = w.item
-		ord/last = s
 	}
 }
 
-// TODO This will not find an instance until the dynamic logic is implemented
 run smallExample for 36 but 4 State
