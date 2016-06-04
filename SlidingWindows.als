@@ -15,13 +15,21 @@ sig State {
 	weight: one WEight
 }
 
+sig GameBoard {
+	column: int, 
+	row: int,
+	emptyRow: int,
+	emptyColumn: int
+}
+
+// Gameboard functions
+fun createTiles[n, m: int]: set Number {}
+
 // A position on the board
-abstract sig Window {
+sig Window {
 	item: lone Number,
 	neighbor: set Window
 }
-// The actual positions on the board
-sig WZero, WOne, WTwo, WThree, WFour, WFive, WSix, WSeven, WEight extends Window {}
 
 // A tile
 abstract sig Number {
