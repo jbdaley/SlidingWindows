@@ -43,63 +43,54 @@ fact WindowGraph {
 	all s: State| {
 		one w: s.windows & WZero| {
 			s.wzero = w
-			#w.neighbor = 2
-			one a: s.windows & WOne| a in w.neighbor
-			one b: s.windows & WThree| b in w.neighbor
+			one a: s.windows & WOne,
+				    b: s.windows & WThree| w.neighbor = a + b
 		}
 		one w: s.windows & WOne| {
 			s.wone = w
-			#w.neighbor = 3
-			one a: s.windows & WZero| a in w.neighbor
-			one b: s.windows & WTwo| b in w.neighbor
-			one c: s.windows & WFour| c in w.neighbor
+			one a: s.windows & WZero,
+					 b: s.windows & WTwo,
+					 c: s.windows & WFour| w.neighbor = a + b + c
 		}
 		one w: s.windows & WTwo| {
 			s.wtwo = w
-			#w.neighbor = 2
-			one a: s.windows & WOne| a in w.neighbor
-			one b: s.windows & WFive| b in w.neighbor
+			one a: s.windows & WOne,
+					 b: s.windows & WFive| w.neighbor = a + b
 		}
 		one w: s.windows & WThree| {
 			s.wthree = w
-			#w.neighbor = 3
-			one a: s.windows & WZero| a in w.neighbor
-			one b: s.windows & WFour| b in w.neighbor
-			one c: s.windows & WSix| c in w.neighbor
+			one a: s.windows & WZero,
+					 b: s.windows & WFour,
+					 c: s.windows & WSix| w.neighbor = a + b + c
 		}
 		one w: s.windows & WFour| {
 			s.wfour = w
-			#w.neighbor = 4
-			one a: s.windows & WOne| a in w.neighbor
-			one b: s.windows & WThree| b in w.neighbor
-			one c: s.windows & WFive| c in w.neighbor
-			one d: s.windows & WSeven| d in w.neighbor
+			one a: s.windows & WOne,
+					 b: s.windows & WThree,
+					 c: s.windows & WFive,
+					 d: s.windows & WSeven| w.neighbor = a + b + c + d
 		}
 		one w: s.windows & WFive| {
 			s.wfive = w
-			#w.neighbor = 3
-			one a: s.windows & WTwo| a in w.neighbor
-			one b: s.windows & WFour| b in w.neighbor
-			one c: s.windows & WEight| c in w.neighbor
+			one a: s.windows & WTwo,
+					 b: s.windows & WFour,
+					 c: s.windows & WEight| w.neighbor = a + b + c
 		}
 		one w: s.windows & WSix| {
 			s.wsix = w
-			#w.neighbor = 2
-			one a: s.windows & WThree| a in w.neighbor
-			one b: s.windows & WSeven| b in w.neighbor
+			one a: s.windows & WThree,
+					 b: s.windows & WSeven| w.neighbor = a + b
 		}
 		one w: s.windows & WSeven| {
 			s.wseven = w
-			#w.neighbor = 3
-			one a: s.windows & WSix| a in w.neighbor
-			one b: s.windows & WFour| b in w.neighbor
-			one c: s.windows & WEight| c in w.neighbor
+			one a: s.windows & WSix,
+					 b: s.windows & WFour,
+					 c: s.windows & WEight| w.neighbor = a + b + c
 		}
 		one w: s.windows & WEight| {
 			s.weight = w
-			#w.neighbor = 2
-			one a: s.windows & WSeven| a in w.neighbor
-			one b: s.windows & WFive| b in w.neighbor
+			one a: s.windows & WSeven,
+					 b: s.windows & WFive| w.neighbor = a + b
 		}
 	}
 }
