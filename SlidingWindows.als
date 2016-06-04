@@ -19,7 +19,7 @@ sig WZero, WOne, WTwo, WThree, WFour, WFive, WSix, WSeven, WEight extends Window
 
 // A tile
 abstract sig Number {
-	parent: one Window
+	parent: some Window
 }
 // Title instances
 one sig One, Two, Three, Four, Five, Six, Seven, Eight extends Number {}
@@ -89,7 +89,7 @@ fact WindowGraph {
 	}
 }
 
-// Each game board should include every number
+// Each game board should include every number and only once
 fact AllNumbersInEachState {
 	all s: State| {
 		one n: One| n in s.windows.item
@@ -103,24 +103,31 @@ fact AllNumbersInEachState {
 	}  
 }
 
-// Each board position should be included in each board
-fact AllWindowsInEachState {
+// Each board position should be included in each board and only once
+// I think this is implied by WindowGraph
+/*fact AllWindowsInEachState {
 	all s: State| {
 		one w: WZero| w in s.windows
 		one w: WOne| w in s.windows
 		one w: WTwo| w in s.windows
-		one w:WThree| w in s.windows
-		one w:WFour| w in s.windows
-		one w:WFive| w in s.windows
-		one w:WSix| w in s.windows
-		one w:WSeven| w in s.windows
-		one w:WEight| w in s.windows
+		one w: WThree| w in s.windows
+		one w: WFour| w in s.windows
+		one w: WFive| w in s.windows
+		one w: WSix| w in s.windows
+		one w: WSeven| w in s.windows
+		one w: WEight| w in s.windows
 	}  
+}*/
+
+// Each window is only used in one board
+fact AllWindowsOnlyInOneState {
+	all disj s, s': State| no w: s.windows| w in s'.windows 
 }
 
-/*fact AllNumbersInOneWindow {
-	all n: Number| one w: Window| n in w.item
-}*/
+// A number can't be in two different positions on the same board
+fact AllNumbersInOneWindowPerState {
+	all n: Number, s: State| one w: s.windows| n = w.item
+}
 
 // All numbers and positions should be assoiated with a board.
 // For example, since each board has 9 positions, if we have one state, we can't have 10 positions.
@@ -146,20 +153,20 @@ pred solvedBoard {
 		one n: Seven, w: s.windows & WSeven| n = w.item
 		one n: Eight, w: s.windows & WEight| n = w.item
 	}
-	#State = 1
+	#State = 2
 }
 
-run solvedBoard for 9 but 1 State
+run solvedBoard for 18 but 2 State
 
 // The dynamic parts...
 
 // This predicate determines how the next board in a sequence of moves (states) can be
 // as a result of the previous board
-pred movePiece[board, board': set Window] {
-	// TODO
-	/*one w: board.windows - board.windows.item.parent| {
-		all w': board' - w - w.neighbor| w'.item in dom[w.item]
-		one w': w.neighbor| #w'.item = 0 and w'
+pred movePiece[board, board': State] {
+	/*// TODO
+	one w: board.windows - board.windows.item.parent| {
+		all w': ((board'.windows - w) - w.neighbor)| w'.item in dom[(w' - > Number)]
+		//one w': w.neighbor| #w'.item = 0 and w'
 	}*/
 }
 
