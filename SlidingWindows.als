@@ -1,12 +1,21 @@
 // Needed to create an ordering of states, from initial to the solution state
-open util/ordering[State]
+open util/ordering[State] as ord
 
 // Uncertain if this will be needed
 open util/relation
 
 // An instance of the game board's state
 sig State {
-	windows: set Window
+	windows: set Window,
+	wzero: one WZero,
+	wone: one WOne,
+	wtwo: one WTwo,
+	wthree: one WThree,
+	wfour: one WFour,
+	wfive: one WFive,
+	wsix: one WSix,
+	wseven: one WSeven,
+	weight: one WEight
 }
 
 // A position on the board
@@ -36,28 +45,33 @@ fact ParentItemRelationship {
 fact WindowGraph {
 	all s: State| {
 		one w: s.windows & WZero| {
+			s.wzero = w
 			#w.neighbor = 2
 			one a: s.windows & WOne| a in w.neighbor
 			one b: s.windows & WThree| b in w.neighbor
 		}
 		one w: s.windows & WOne| {
+			s.wone = w
 			#w.neighbor = 3
 			one a: s.windows & WZero| a in w.neighbor
 			one b: s.windows & WTwo| b in w.neighbor
 			one c: s.windows & WFour| c in w.neighbor
 		}
 		one w: s.windows & WTwo| {
+			s.wtwo = w
 			#w.neighbor = 2
 			one a: s.windows & WOne| a in w.neighbor
 			one b: s.windows & WFive| b in w.neighbor
 		}
 		one w: s.windows & WThree| {
+			s.wthree = w
 			#w.neighbor = 3
 			one a: s.windows & WZero| a in w.neighbor
 			one b: s.windows & WFour| b in w.neighbor
 			one c: s.windows & WSix| c in w.neighbor
 		}
 		one w: s.windows & WFour| {
+			s.wfour = w
 			#w.neighbor = 4
 			one a: s.windows & WOne| a in w.neighbor
 			one b: s.windows & WThree| b in w.neighbor
@@ -65,23 +79,27 @@ fact WindowGraph {
 			one d: s.windows & WSeven| d in w.neighbor
 		}
 		one w: s.windows & WFive| {
+			s.wfive = w
 			#w.neighbor = 3
 			one a: s.windows & WTwo| a in w.neighbor
 			one b: s.windows & WFour| b in w.neighbor
 			one c: s.windows & WEight| c in w.neighbor
 		}
 		one w: s.windows & WSix| {
+			s.wsix = w
 			#w.neighbor = 2
 			one a: s.windows & WThree| a in w.neighbor
 			one b: s.windows & WSeven| b in w.neighbor
 		}
 		one w: s.windows & WSeven| {
+			s.wseven = w
 			#w.neighbor = 3
 			one a: s.windows & WSix| a in w.neighbor
 			one b: s.windows & WFour| b in w.neighbor
 			one c: s.windows & WEight| c in w.neighbor
 		}
 		one w: s.windows & WEight| {
+			s.weight = w
 			#w.neighbor = 2
 			one a: s.windows & WSeven| a in w.neighbor
 			one b: s.windows & WFive| b in w.neighbor
@@ -163,11 +181,40 @@ run solvedBoard for 18 but 2 State
 // This predicate determines how the next board in a sequence of moves (states) can be
 // as a result of the previous board
 pred movePiece[board, board': State] {
-	/*// TODO
+	// w is the empty window in board
 	one w: board.windows - board.windows.item.parent| {
-		all w': ((board'.windows - w) - w.neighbor)| w'.item in dom[(w' - > Number)]
-		//one w': w.neighbor| #w'.item = 0 and w'
-	}*/
+		// x is one of the empty tiles neighbors
+		one x: w.neighbor| {
+			// In the next board, the tile x becomes empty (tile is slid to replace the previously empty window)
+			(x in WZero implies none = board'.wzero.item) and
+			(x in WOne implies none = board'.wone.item) and
+			(x in WTwo implies none = board'.wtwo.item) and
+			(x in WThree implies none = board'.wthree.item) and
+			(x in WFour implies none = board'.wfour.item) and
+			(x in WFive implies none = board'.wfive.item) and
+			(x in WSix implies none = board'.wsix.item) and
+			(x in WSeven implies none = board'.wseven.item) and
+			(x in WEight implies none = board'.weight.item) and
+			// All tiles except the empty tile and x retain their number
+			// Since x is now empty, this implies that the previously empty tile must take number
+			// from the x tile.
+			all y: ((board.windows - w) - x)| (y in WZero implies y.item = board'.wzero.item) and
+																	 (y in WOne implies y.item = board'.wone.item) and
+																	 (y in WTwo implies y.item = board'.wtwo.item) and
+																	 (y in WThree implies y.item = board'.wthree.item) and
+																	 (y in WFour implies y.item = board'.wfour.item) and
+																	 (y in WFive implies y.item = board'.wfive.item) and
+																	 (y in WSix implies y.item = board'.wsix.item) and
+																	 (y in WSeven implies y.item = board'.wseven.item) and
+																	 (y in WEight implies y.item = board'.weight.item)
+		}
+	}
+}
+
+fact stateTransition {
+  all s: State, s': ord/next[s] {
+      movePiece[s, s']
+  }
 }
 
 // This example should show a sequence of states from the initial board
@@ -176,16 +223,20 @@ pred movePiece[board, board': State] {
 *  6 7 8      6 7 8
 */
 pred smallExample {
+	// Initial state (some state is the initial state)
 	some s: State| {
-		one n: One, w: s.windows & WZero| n = w.item
-		one n: Two, w: s.windows & WTwo| n = w.item
-		one n: Three, w: s.windows & WThree| n = w.item
-		one n: Four, w: s.windows & WFour| n = w.item
-		one n: Five, w: s.windows & WFive| n = w.item
-		one n: Six, w: s.windows & WSix| n = w.item
-		one n: Seven, w: s.windows & WSeven| n = w.item
-		one n: Eight, w: s.windows & WEight| n = w.item
+		one w: s.windows & WZero| Eight = w.item
+		one w: s.windows & WOne| One = w.item
+		one w: s.windows & WTwo| Two = w.item
+		one w: s.windows & WThree| Three = w.item
+		one w: s.windows & WFour| Four = w.item
+		one w: s.windows & WFive| Five = w.item
+		one w: s.windows & WSix| Six = w.item
+		one w: s.windows & WSeven| Seven = w.item
+		one w: s.windows & WEight| none = w.item
+		ord/first = s
 	}
+	// solved state (some state is the solved state)
 	some s: State| {
 		one n: One, w: s.windows & WOne| n = w.item
 		one n: Two, w: s.windows & WTwo| n = w.item
@@ -195,8 +246,9 @@ pred smallExample {
 		one n: Six, w: s.windows & WSix| n = w.item
 		one n: Seven, w: s.windows & WSeven| n = w.item
 		one n: Eight, w: s.windows & WEight| n = w.item
+		ord/last = s
 	}
 }
 
 // TODO This will not find an instance until the dynamic logic is implemented
-run smallExample for 18 but 2 State
+run smallExample for 36 but 4 State
