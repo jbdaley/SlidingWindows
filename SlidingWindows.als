@@ -1,24 +1,38 @@
+// Needed to create an ordering of states, from initial to the solution state
 open util/ordering[State]
 
+// Uncertain if this will be needed
+open util/relation
+
+// An instance of the game board's state
 sig State {
 	windows: set Window
 }
 
+// A position on the board
 abstract sig Window {
 	item: lone Number,
 	neighbor: set Window
 }
+// The actual positions on the board
 sig WZero, WOne, WTwo, WThree, WFour, WFive, WSix, WSeven, WEight extends Window {}
 
+// A tile
 abstract sig Number {
 	parent: one Window
 }
-sig One, Two, Three, Four, Five, Six, Seven, Eight extends Number {}
+// Title instances
+one sig One, Two, Three, Four, Five, Six, Seven, Eight extends Number {}
 
+// This is useful to find which position a number is at on a given board... I'm not sure if this will
+// be used when we're done.
 fact ParentItemRelationship {
 	parent = ~item
 }
 
+// The positions on the board can be though of as a graph. The vertices are the positions on the board
+// and the edges are the neighboring relationships between positions.
+// Each state (instance of a game board) needs its own graph
 fact WindowGraph {
 	all s: State| {
 		one w: s.windows & WZero| {
@@ -75,6 +89,7 @@ fact WindowGraph {
 	}
 }
 
+// Each game board should include every number
 fact AllNumbersInEachState {
 	all s: State| {
 		one n: One| n in s.windows.item
@@ -88,6 +103,7 @@ fact AllNumbersInEachState {
 	}  
 }
 
+// Each board position should be included in each board
 fact AllWindowsInEachState {
 	all s: State| {
 		one w: WZero| w in s.windows
@@ -102,16 +118,24 @@ fact AllWindowsInEachState {
 	}  
 }
 
-fact AllNumbersInOneWindow {
+/*fact AllNumbersInOneWindow {
 	all n: Number| one w: Window| n in w.item
-}
+}*/
 
+// All numbers and positions should be assoiated with a board.
+// For example, since each board has 9 positions, if we have one state, we can't have 10 positions.
 fact NoExtraNumbersOrWindows {
 	all w: Window| w in State.windows
 	all n: Number| n in State.windows.item
 }
 
-pred show {
+// Show the solve state of the board. This can be used as a sanity check about the board
+// relationships
+/* * 1 2
+*  3 4 5
+*  6 7 8
+*/
+pred solvedBoard {
 	some s: State| {
 		one n: One, w: s.windows & WOne| n = w.item
 		one n: Two, w: s.windows & WTwo| n = w.item
@@ -125,15 +149,26 @@ pred show {
 	#State = 1
 }
 
-run show for 9 but 1 State
+run solvedBoard for 9 but 1 State
 
 // The dynamic parts...
 
-pred crossRiver [board, board': set Window] {
+// This predicate determines how the next board in a sequence of moves (states) can be
+// as a result of the previous board
+pred movePiece[board, board': set Window] {
 	// TODO
+	/*one w: board.windows - board.windows.item.parent| {
+		all w': board' - w - w.neighbor| w'.item in dom[w.item]
+		one w': w.neighbor| #w'.item = 0 and w'
+	}*/
 }
 
-pred small {
+// This example should show a sequence of states from the initial board
+/* 1 * 2      * 1 2
+*  3 4 5 -> 3 4 5
+*  6 7 8      6 7 8
+*/
+pred smallExample {
 	some s: State| {
 		one n: One, w: s.windows & WZero| n = w.item
 		one n: Two, w: s.windows & WTwo| n = w.item
@@ -156,4 +191,5 @@ pred small {
 	}
 }
 
-run small for 18 but 2 State
+// TODO This will not find an instance until the dynamic logic is implemented
+run smallExample for 18 but 2 State
