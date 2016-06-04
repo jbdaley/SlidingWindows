@@ -3,19 +3,10 @@ open util/ordering[State] as ord
 
 // An instance of the game board's state
 sig State {
-	windows: set Window,
-	wzero: one WZero,
-	wone: one WOne,
-	wtwo: one WTwo,
-	wthree: one WThree,
-	wfour: one WFour,
-	wfive: one WFive,
-	wsix: one WSix,
-	wseven: one WSeven,
-	weight: one WEight
+	windows: set Window
 }
 
-sig GameBoard {
+one sig GameBoard {
 	column: int, 
 	row: int,
 	emptyRow: int,
@@ -23,92 +14,31 @@ sig GameBoard {
 }
 
 // Gameboard functions
-fun createTiles[n, m: int]: set Number {}
+//fun createTiles[n, m: int]: set Number {}
 
 // A position on the board
 sig Window {
-	item: lone Number,
-	neighbor: set Window
+	item: lone Int,
+	posRow: one Int,
+	posCol: one Int
 }
 
-// A tile
-abstract sig Number {
-	parent: some Window
-}
-// Title instances
-one sig One, Two, Three, Four, Five, Six, Seven, Eight extends Number {}
-
-// This is useful to find which position a number is at on a given board... I'm not sure if this will
-// be used when we're done.
-fact ParentItemRelationship {
-	parent = ~item
+fact WindowsHaveUniquePositionInBoard {
+	all s: State| all disj x, y: s.windows| x.posRow != y.posRow or x.posCol != y.posCol
 }
 
-// The positions on the board can be though of as a graph. The vertices are the positions on the board
+fact AllNumbersOnEachBoard {
+	all s: State { #s.windows.item = GameBoard.row fun/mult GameBoard.column }
+}
+
+// The positions on the board can be thought of as a graph. The vertices are the positions on the board
 // and the edges are the neighboring relationships between positions.
 // Each state (instance of a game board) needs its own graph
-fact WindowGraph {
-	all s: State| {
-		one w: s.windows & WZero| {
-			s.wzero = w
-			#w.neighbor = 2
-			one a: s.windows & WOne| a in w.neighbor
-			one b: s.windows & WThree| b in w.neighbor
-		}
-		one w: s.windows & WOne| {
-			s.wone = w
-			#w.neighbor = 3
-			one a: s.windows & WZero| a in w.neighbor
-			one b: s.windows & WTwo| b in w.neighbor
-			one c: s.windows & WFour| c in w.neighbor
-		}
-		one w: s.windows & WTwo| {
-			s.wtwo = w
-			#w.neighbor = 2
-			one a: s.windows & WOne| a in w.neighbor
-			one b: s.windows & WFive| b in w.neighbor
-		}
-		one w: s.windows & WThree| {
-			s.wthree = w
-			#w.neighbor = 3
-			one a: s.windows & WZero| a in w.neighbor
-			one b: s.windows & WFour| b in w.neighbor
-			one c: s.windows & WSix| c in w.neighbor
-		}
-		one w: s.windows & WFour| {
-			s.wfour = w
-			#w.neighbor = 4
-			one a: s.windows & WOne| a in w.neighbor
-			one b: s.windows & WThree| b in w.neighbor
-			one c: s.windows & WFive| c in w.neighbor
-			one d: s.windows & WSeven| d in w.neighbor
-		}
-		one w: s.windows & WFive| {
-			s.wfive = w
-			#w.neighbor = 3
-			one a: s.windows & WTwo| a in w.neighbor
-			one b: s.windows & WFour| b in w.neighbor
-			one c: s.windows & WEight| c in w.neighbor
-		}
-		one w: s.windows & WSix| {
-			s.wsix = w
-			#w.neighbor = 2
-			one a: s.windows & WThree| a in w.neighbor
-			one b: s.windows & WSeven| b in w.neighbor
-		}
-		one w: s.windows & WSeven| {
-			s.wseven = w
-			#w.neighbor = 3
-			one a: s.windows & WSix| a in w.neighbor
-			one b: s.windows & WFour| b in w.neighbor
-			one c: s.windows & WEight| c in w.neighbor
-		}
-		one w: s.windows & WEight| {
-			s.weight = w
-			#w.neighbor = 2
-			one a: s.windows & WSeven| a in w.neighbor
-			one b: s.windows & WFive| b in w.neighbor
-		}
+// This graph is no longer a part of the metamodel
+pred WindowGraphPred[state: State] {
+	
+	all w: state.windows| {
+			
 	}
 }
 
