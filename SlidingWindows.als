@@ -96,9 +96,13 @@ fact NoExtraNumbersOrWindows {
 */
 pred solvedBoard {
 	// solved state is solved
-	one s: State| all w: s.windows {
+	/*one s: State| all w: s.windows {
 		w.item.value = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
-	}
+	}*/
+
+	GameBoard.column = 3
+	GameBoard.row = 3
+	#State = 1
 }
 
 run solvedBoard for 9 but 1 State
