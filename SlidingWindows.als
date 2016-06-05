@@ -62,7 +62,7 @@ fact WindowsHaveUniquePositionInBoard {
 // TODO: Check if this is an actual optimization
 // Because all tiles have values, this is that same as checking #s.windows.item.value, but this saves a level of indirection
 fact AllNumbersOnEachBoard {
-	all s: State| #s.windows.item = ((GameBoard.row fun/mul GameBoard.column) fun/sub 1)
+	all s: State| #s.windows.item = GameBoard.row fun/mul GameBoard.column
 }
 
 fact AllWindowsOnEachBoard {
@@ -75,7 +75,7 @@ fact AllWindowsValidPosition {
 }
 
 fact AllNumbersInRange {
-	all n: State.windows.item.value | n > 0 and n < (GameBoard.row fun/mul GameBoard.column)
+	all n: State.windows.item.value | n > 0 and n <= (GameBoard.row fun/mul GameBoard.column)
 }
 
 fact AllNumbersOnBoardUnique {
@@ -102,16 +102,16 @@ fact NoExtraNumbersOrWindows {
 */
 pred solvedBoard {
 	// solved state is solved
-	/*one s: State| all w: s.windows {
-		w.item.value = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
-	}*/
+	one s: State| all w: s.windows {
+		w.item.value = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
+	}
 
 	GameBoard.column = 3
 	GameBoard.row = 3
 	#State = 1
 }
 
-run solvedBoard for 8 but 1 State, 5 int, 9 Window
+run solvedBoard for 9 but 1 State, 5 int
 
 // The dynamic parts...
 
