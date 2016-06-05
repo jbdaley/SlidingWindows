@@ -151,6 +151,9 @@ pred smallExample {
 	some s: State| all w: s.windows {
 		w.item = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
 	}
+	GameBoard.column = 3
+	GameBoard.row = 3
+	#State = 2
 }
 
-run smallExample for 36 but 4 State
+run smallExample for 18 but 2 State, 5 int
