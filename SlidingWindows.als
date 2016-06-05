@@ -73,7 +73,7 @@ fact AllNumbersInRange {
 }
 
 fact AllNumbersOnBoardUnique {
-	all s: State| all disj n, n': s.windows.item.value | n != n'
+	all s: State| all disj w, w': s.windows | w.item.value != w'.item.value
 }
 
 // Each window is only used in one board
@@ -105,7 +105,7 @@ pred solvedBoard {
 	#State = 1
 }
 
-run solvedBoard for 9 but 1 State
+run solvedBoard for 9 but 1 State, 5 int
 
 // The dynamic parts...
 
