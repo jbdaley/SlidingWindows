@@ -3,14 +3,14 @@ open util/ordering[State] as ord
 
 // An instance of the game board's state
 sig State {
-	windows: set Window
+	windows: set Windows,
+	emptyRow: one Int,
+	emptyColumn: one Int
 }
 
 one sig GameBoard {
-	column: int, 
-	row: int,
-	emptyRow: int,
-	emptyColumn: int
+	column: one Int, 
+	row: one Int
 }
 
 // Gameboard functions
@@ -28,7 +28,24 @@ fact WindowsHaveUniquePositionInBoard {
 }
 
 fact AllNumbersOnEachBoard {
-	all s: State { #s.windows.item = GameBoard.row fun/mult GameBoard.column }
+	all s: State| #s.windows.item = ((GameBoard.row fun/mult GameBoard.column) fun/sub 1)
+}
+
+fact AllWindowsOnEachBoard {
+	all s: State| #s.windows = GameBoard.row fun/mult GameBoard.column
+}
+
+fact AllWindowsValidPosition {
+	all w: Window| w.posRow > 0 and w.posRow <= GameBoard.row and
+								w.posCol > 0 and w.posCol <= GameBoard.column
+}
+
+fact AllNumbersInRange {
+	all n: State.windows.item| n > 0 and n < (GameBoard.row fun/mult GameBoard.column)
+}
+
+fact AllNumbersOnBoardUnique {
+	all s: State| all disj n, n': State.windows.item| n != n'
 }
 
 // The positions on the board can be thought of as a graph. The vertices are the positions on the board
@@ -96,15 +113,9 @@ fact NoExtraNumbersOrWindows {
 *  6 7 8
 */
 pred solvedBoard {
-	some s: State| {
-		one n: One, w: s.windows & WOne| n = w.item
-		one n: Two, w: s.windows & WTwo| n = w.item
-		one n: Three, w: s.windows & WThree| n = w.item
-		one n: Four, w: s.windows & WFour| n = w.item
-		one n: Five, w: s.windows & WFive| n = w.item
-		one n: Six, w: s.windows & WSix| n = w.item
-		one n: Seven, w: s.windows & WSeven| n = w.item
-		one n: Eight, w: s.windows & WEight| n = w.item
+	// solved state is solved
+	one s: State| all w: s.windows {
+		w.item = ((w.posRow fun/sub 1) fun/mult GameBoard.column) + w.posCol
 	}
 }
 
@@ -170,15 +181,8 @@ pred smallExample {
 		one w: s.windows & WEight| Eight = w.item
 	}
 	// solved state is solved
-	some s: State| {
-		one n: One, w: s.windows & WOne| n = w.item
-		one n: Two, w: s.windows & WTwo| n = w.item
-		one n: Three, w: s.windows & WThree| n = w.item
-		one n: Four, w: s.windows & WFour| n = w.item
-		one n: Five, w: s.windows & WFive| n = w.item
-		one n: Six, w: s.windows & WSix| n = w.item
-		one n: Seven, w: s.windows & WSeven| n = w.item
-		one n: Eight, w: s.windows & WEight| n = w.item
+	some s: State| all w: s.windows {
+		w.item = ((w.posRow fun/sub 1) fun/mult GameBoard.column) + w.posCol
 	}
 }
 
