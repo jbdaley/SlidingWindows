@@ -1,9 +1,11 @@
 // Needed to create an ordering of states, from initial to the solution state
 open util/ordering[State] as ord
 
+open util/integer
+
 // An instance of the game board's state
 sig State {
-	windows: set Windows,
+	windows: set Window,
 	emptyRow: one Int,
 	emptyColumn: one Int
 }
@@ -28,11 +30,11 @@ fact WindowsHaveUniquePositionInBoard {
 }
 
 fact AllNumbersOnEachBoard {
-	all s: State| #s.windows.item = ((GameBoard.row fun/mult GameBoard.column) fun/sub 1)
+	all s: State| #s.windows.item = GameBoard.row mult GameBoard.column
 }
 
 fact AllWindowsOnEachBoard {
-	all s: State| #s.windows = GameBoard.row fun/mult GameBoard.column
+	all s: State| #s.windows = GameBoard.row mult GameBoard.column
 }
 
 fact AllWindowsValidPosition {
@@ -41,11 +43,11 @@ fact AllWindowsValidPosition {
 }
 
 fact AllNumbersInRange {
-	all n: State.windows.item| n > 0 and n < (GameBoard.row fun/mult GameBoard.column)
+	all n: State.windows.item| n > 0 and n < (GameBoard.row fun/mul GameBoard.column)
 }
 
 fact AllNumbersOnBoardUnique {
-	all s: State| all disj n, n': State.windows.item| n != n'
+	all s: State| all disj n, n': s.windows.item| n != n'
 }
 
 // The positions on the board can be thought of as a graph. The vertices are the positions on the board
@@ -115,7 +117,7 @@ fact NoExtraNumbersOrWindows {
 pred solvedBoard {
 	// solved state is solved
 	one s: State| all w: s.windows {
-		w.item = ((w.posRow fun/sub 1) fun/mult GameBoard.column) + w.posCol
+		w.item = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
 	}
 }
 
@@ -182,7 +184,7 @@ pred smallExample {
 	}
 	// solved state is solved
 	some s: State| all w: s.windows {
-		w.item = ((w.posRow fun/sub 1) fun/mult GameBoard.column) + w.posCol
+		w.item = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
 	}
 }
 
