@@ -81,11 +81,6 @@ fact AllWindowsOnlyInOneState {
 	all disj s, s': State| no w: s.windows| w in s'.windows 
 }
 
-// A number can't be in two different positions on the same board
-fact AllNumbersInOneWindowPerState {
-	all n: Number, s: State| one w: s.windows| n = w.item
-}
-
 // All numbers and positions should be assoiated with a board.
 // For example, since each board has 9 positions, if we have one state, we can't have 10 positions.
 fact NoExtraNumbersOrWindows {
@@ -140,12 +135,12 @@ fact stateTransition {
 */
 pred smallExample {
 	// Initial state is the following "initial" state
-	some s: State| {
+	//some s: State| {
 	// We could specify the initial board state here
-	}
+	//}
 	// solved state is solved
 	some s: State| all w: s.windows {
-		w.item = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
+		w.item.value = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
 	}
 }
 
