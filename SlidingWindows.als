@@ -86,43 +86,39 @@ pred solvedBoard {
 
 	GameBoard.column = 3
 	GameBoard.row = 3
-	#State = 2
+	#State = 1
 }
 
-run solvedBoard for 9 but 2 State, 5 int
+run solvedBoard for 9 but 1 State, 5 int
 
 // The dynamic parts...
 
 // This predicate determines how the next board in a sequence of moves (states) can be
 // as a result of the previous board
-/*pred movePiece[board, board': State] {
+pred movePiece[board, board': State] {
 	// w is the empty window in board
-	one w: board.windows| {
+	one w: Window| {
 		// w is the empty tile
-		w.item = GameBoard.row fun/mul GameBoard.column
+		w.item[board] = GameBoard.row fun/mul GameBoard.column
 		// x is one of the empty tiles neighbors
-		one x: w.neighbor, x': board'.windows| {
+		one x: w.neighbor| {
 			// In the next board, the tile x becomes empty (tile is slid to replace the previously empty window)
-			x'.posRow = x.posRow
-			x'.posCol = x.posCol
-			x'.item = none
+			x.item[board'] = w.item[board]
 			// All tiles except the empty tile and x retain their number
 			// Since x is now empty, this implies that the previously empty tile must take number
 			// from the x tile.
-			all y: ((board.windows - w) - x)| one y': board'.windows| {
-				y'.posRow = y.posRow
-				y'.posCol = y.posCol
-				y'.item = y.item
+			all y: ((Window - w) - x)| {
+				y.item[board'] = y.item[board]
 			}
 		}
 	}
-}*/
+}
 
-/*fact stateTransition {
+fact stateTransition {
   all s: State, s': ord/next[s] {
       movePiece[s, s']
   }
-}*/
+}
 
 // This example should show a sequence of states from the initial board
 /* 1 2 5    * 1 2
@@ -143,4 +139,4 @@ pred smallExample {
 	#State = 2
 }
 
-run smallExample for 18 but 2 State, 5 int
+run smallExample for 9 but 2 State, 5 int
