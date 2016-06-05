@@ -21,22 +21,13 @@ one sig GameBoard {
 // A position on the board
 sig Window {
 	neighbor: some Window,
-	item: lone Tile,
+	item: one Int,
 	posRow: one Int,
 	posCol: one Int
 }
 
-sig Tile {
-	parent: one Window,
-	value: one Int
-}
-
 fact NeighborIsReflexive {
 	neighbor = ~neighbor
-}
-
-fact ItemParentAreTranspose {
-	item = ~parent
 }
 
 fact NeighborsAreSomething {
@@ -75,11 +66,11 @@ fact AllWindowsValidPosition {
 }
 
 fact AllNumbersInRange {
-	all n: State.windows.item.value | n > 0 and n <= (GameBoard.row fun/mul GameBoard.column)
+	all n: State.windows.item | n > 0 and n <= (GameBoard.row fun/mul GameBoard.column)
 }
 
 fact AllNumbersOnBoardUnique {
-	all s: State| all disj w, w': s.windows | w.item.value != w'.item.value
+	all s: State| all disj w, w': s.windows | w.item != w'.item
 }
 
 // Each window is only used in one board
@@ -91,7 +82,13 @@ fact AllWindowsOnlyInOneState {
 // For example, since each board has 9 positions, if we have one state, we can't have 10 positions.
 fact NoExtraNumbersOrWindows {
 	all w: Window| w in State.windows
-	all n: Tile| n in State.windows.item
+}
+
+fact EmptyRowAndColumn {
+	all s: State| one w: s.windows| {
+		w.item = GameBoard.row fun/mult GameBoard.column
+		s.emptyRow = w.posRow and s.emptyColumn = w.posCol
+	}
 }
 
 // Show the solve state of the board. This can be used as a sanity check about the board
@@ -103,7 +100,7 @@ fact NoExtraNumbersOrWindows {
 pred solvedBoard {
 	// solved state is solved
 	one s: State| all w: s.windows {
-		w.item.value = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
+		w.item = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
 	}
 
 	GameBoard.column = 3
@@ -119,7 +116,9 @@ run solvedBoard for 9 but 1 State, 5 int
 // as a result of the previous board
 pred movePiece[board, board': State] {
 	// w is the empty window in board
-	one w: board.windows - board.windows.item.parent| {
+	one w: board.windows| {
+		// w is the empty tile
+		w.item = GameBoard.row fun/mul GameBoard.column
 		// x is one of the empty tiles neighbors
 		one x: w.neighbor, x': board'.windows| {
 			// In the next board, the tile x becomes empty (tile is slid to replace the previously empty window)
@@ -127,7 +126,7 @@ pred movePiece[board, board': State] {
 			// All tiles except the empty tile and x retain their number
 			// Since x is now empty, this implies that the previously empty tile must take number
 			// from the x tile.
-			all y: ((board.windows - w) - x)| one y': board'.windows| y'.posRow = y.posRow and y'.posCol = y.posCol and y'.item.value = y.item.value
+			all y: ((board.windows - w) - x)| one y': board'.windows| y'.posRow = y.posRow and y'.posCol = y.posCol and y'.item = y.item
 		}
 	}
 }
@@ -150,7 +149,7 @@ pred smallExample {
 	//}
 	// solved state is solved
 	some s: State| all w: s.windows {
-		w.item.value = ((w.posRow fun/sub 1) fun/mul GameBoard.column) + w.posCol
+		w.item = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
 	}
 }
 
