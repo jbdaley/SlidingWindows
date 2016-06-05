@@ -86,7 +86,7 @@ fact NoExtraNumbersOrWindows {
 
 fact EmptyRowAndColumn {
 	all s: State| one w: s.windows| {
-		w.item = GameBoard.row fun/mult GameBoard.column
+		w.item = GameBoard.row fun/mul GameBoard.column
 		s.emptyRow = w.posRow and s.emptyColumn = w.posCol
 	}
 }
