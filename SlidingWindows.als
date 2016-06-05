@@ -45,6 +45,10 @@ fact NeighborsAreSomething {
 	all s: State| all disj x,y: s.windows| ((x.posRow fun/sub y.posRow) = 0 and (x.posCol fun/sub y.posCol) in (-1 + 1)) implies (x -> y) in neighbor and
 																		((x.posCol fun/sub y.posCol) = 0 and (x.posRow fun/sub y.posRow) in (-1 + 1)) implies (x -> y) in neighbor
 
+	all w: Window| (w.posRow in (1 + GameBoard.row) and w.posCol in (1 + GameBoard.column)) implies #w.neighbor = 2
+	all w: Window| ((w.posRow in (1 + GameBoard.row) and not w.posCol in (1 + GameBoard.column)) or  (not w.posRow in (1 + GameBoard.row) and w.posCol in (1 + GameBoard.column))) implies #w.neighbor = 3
+	all w: Window| (not w.posRow in (1 + GameBoard.row) and not w.posCol in (1 + GameBoard.column)) implies #w.neighbor = 4
+
 	// Windows on different boards are not neighbors
 	all disj s, s': State| no x: s.windows, y: s'.windows| (x -> y) in neighbor
 }
@@ -105,7 +109,7 @@ pred solvedBoard {
 	#State = 1
 }
 
-run solvedBoard for 9 but 1 State, 5 int
+run solvedBoard for 8 but 1 State, 5 int, 9 Window
 
 // The dynamic parts...
 
