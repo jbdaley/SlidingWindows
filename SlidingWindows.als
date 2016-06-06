@@ -1,22 +1,16 @@
 // Needed to create an ordering of states, from initial to the solution state
 open util/ordering[State] as ord
 
+// Seems to be needed for multiplication function
 open util/integer
 
 // An instance of the game board's state
-sig State {
-	//windows: set Window,
-	//emptyRow: one Int,
-	//emptyColumn: one Int
-}
-
+sig State {}
+// Singleton. Holds the dimensions of the board.
 one sig GameBoard {
 	column: one Int, 
 	row: one Int
 }
-
-// Gameboard functions
-//fun createTiles[n, m: int]: set Number {}
 
 // A position on the board
 sig Window {
@@ -72,24 +66,14 @@ fact ItemCardinality {
 	all w: Window| #w.item = #State
 }
 
-// Show the solve state of the board. This can be used as a sanity check about the board
-// relationships
-/* * 1 2
-*  3 4 5
-*  6 7 8
-*/
-pred solvedBoard {
-	// solved state is solved
-	one s: State| all w: Window {
-		w.item[s] = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
-	}
-
-	GameBoard.column = 3
-	GameBoard.row = 3
-	#State = 1
+pred LastStateIsSolved {
+	one s: State| {
+		s = ord/last
+		all w: Window {
+			w.item[s] = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
+		}
+	}	
 }
-
-run solvedBoard for 9 but 1 State, 5 int
 
 // The dynamic parts...
 
@@ -121,22 +105,17 @@ fact stateTransition {
 }
 
 // This example should show a sequence of states from the initial board
-/* 1 2 5    * 1 2
-*  3 4 * -> 3 4 5
-*  6 7 8    6 7 8
-*/
-pred smallExample {
+pred SolveProblem {
 	// Initial state is the following "initial" state
 	//some s: State| {
+	// s = ord/first
 	// We could specify the initial board state here
 	//}
-	// solved state is solved
-	one s: State| all w: Window {
-		w.item[s] = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
-	}
+
+	LastStateIsSolved
+
 	GameBoard.column = 3
 	GameBoard.row = 3
-	#State = 2
 }
 
-run smallExample for 9 but 2 State, 5 int
+run SolveProblem for 9 but 2 State, 5 int
