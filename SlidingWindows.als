@@ -76,10 +76,6 @@ fact AllNumbersOnBoardUnique {
 	all s: State| all disj w, w': Window | getItem[w, s] != getItem[w', s]
 }
 
-fact ItemCardinality {
-	all w: Window| #w.item = #State
-}
-
 // The dynamic parts...
 
 pred LastStateIsSolved {
@@ -136,6 +132,12 @@ assert NeighborIsReflexive {
 }
 
 check NeighborIsReflexive for 9 but 2 State, 5 int
+
+assert OneItemPerState {
+	all w: Window| #w.item = #State
+}
+
+check OneItemPerState for 9 but 2 State, 5 int
 
 // This example should show a sequence of states from the initial board
 pred SolveProblem {
