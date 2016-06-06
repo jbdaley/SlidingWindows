@@ -142,14 +142,14 @@ pred SolveProblem {
 	* 	s = ord/first
 	* 	all w: Window {
 	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 3
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 2
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 1
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 4
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 5
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 6
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 7
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 8
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 9 // numRow * numCol is the blank space
+	*		(w.posRow = 1 and w.getCol = 2) implies getItem[w, s] = 2
+	*		(w.posRow = 1 and w.getCol = 3) implies getItem[w, s] = 1
+	*		(w.posRow = 2 and w.getCol = 1) implies getItem[w, s] = 4
+	*		(w.posRow = 2 and w.getCol = 2) implies getItem[w, s] = 5
+	*		(w.posRow = 2 and w.getCol = 3) implies getItem[w, s] = 6
+	*		(w.posRow = 3 and w.getCol = 1) implies getItem[w, s] = 7
+	*		(w.posRow = 3 and w.getCol = 2) implies getItem[w, s] = 8
+	*		(w.posRow = 3 and w.getCol = 3) implies getItem[w, s] = 9 // numRow * numCol is the blank space
 	*	}
 	*}*/
 
