@@ -120,42 +120,42 @@ fact BoardIsNotDegenerate {
 	numRow >= 2
 }
 
-assert OneMoveAssertion {
-	all s, s': State| some disj w, w': Window |
+assert OneMoveValid {
+	all s, s': State| one w: Window | one w': Window - w|
 		MovePiece[s, s'] implies (getItem[w, s] = getItem[w', s'] and getItem[w', s] = getItem[w, s']) 
 }
 
-check OneMoveAssertion for 9 but 2 State, 5 int
+check OneMoveValid for 9 but 2 State, 5 int
 
 assert NeighborIsReflexive {
 	neighbor = ~neighbor
 }
 
-check NeighborIsReflexive for 9 but 2 State, 5 int
+check NeighborIsReflexive for 9 Window, 2 State, 5 int
 
 assert OneItemPerState {
 	all w: Window| #w.item = #State
 }
 
-check OneItemPerState for 9 but 2 State, 5 int
+check OneItemPerState for 9 Window, 2 State, 5 int
 
 // This example should show a sequence of states from the initial board
 pred SolveProblem {
 	// Initial state is the following "initial" state
-	/*some s: State| {
-	* 	s = ord/first
-	* 	all w: Window {
-	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 3
-	*		(w.posRow = 1 and w.getCol = 2) implies getItem[w, s] = 2
-	*		(w.posRow = 1 and w.getCol = 3) implies getItem[w, s] = 1
-	*		(w.posRow = 2 and w.getCol = 1) implies getItem[w, s] = 4
-	*		(w.posRow = 2 and w.getCol = 2) implies getItem[w, s] = 5
-	*		(w.posRow = 2 and w.getCol = 3) implies getItem[w, s] = 6
-	*		(w.posRow = 3 and w.getCol = 1) implies getItem[w, s] = 7
-	*		(w.posRow = 3 and w.getCol = 2) implies getItem[w, s] = 8
-	*		(w.posRow = 3 and w.getCol = 3) implies getItem[w, s] = 9 // numRow * numCol is the blank space
-	*	}
-	*}*/
+	some s: State| {
+	 	s = ord/first
+	 	all w: Window {
+			(w.posRow = 1 and w.posCol = 1) implies getItem[w, s] = 9
+			(w.posRow = 1 and w.posCol = 2) implies getItem[w, s] = 1
+			(w.posRow = 1 and w.posCol = 3) implies getItem[w, s] = 2
+			(w.posRow = 2 and w.posCol = 1) implies getItem[w, s] = 5
+			(w.posRow = 2 and w.posCol = 2) implies getItem[w, s] = 6
+			(w.posRow = 2 and w.posCol = 3) implies getItem[w, s] = 3
+			(w.posRow = 3 and w.posCol = 1) implies getItem[w, s] = 4
+			(w.posRow = 3 and w.posCol = 2) implies getItem[w, s] = 7
+			(w.posRow = 3 and w.posCol = 3) implies getItem[w, s] = 8 // numRow * numCol is the blank space
+		}
+	}
 
 	LastStateIsSolved
 
@@ -163,4 +163,4 @@ pred SolveProblem {
 	numRow = 3
 }
 
-run SolveProblem for 9 but 2 State, 5 int
+run SolveProblem for 9 Window, 9 State, 5 int
