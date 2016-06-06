@@ -121,8 +121,10 @@ fact BoardIsNotDegenerate {
 }
 
 assert OneMoveValid {
-	all s, s': State| one w: Window | one w': Window - w|
-		MovePiece[s, s'] implies (getItem[w, s] = getItem[w', s'] and getItem[w', s] = getItem[w, s']) 
+	some s: State, s': ord/next[s]| one w: Window| one w': (Window - w)| {
+		getItem[w, s] = getItem[w', s']
+		getItem[w', s] = getItem[w, s']
+	}
 }
 
 check OneMoveValid for 9 but 2 State, 5 int
