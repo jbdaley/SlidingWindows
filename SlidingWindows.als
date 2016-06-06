@@ -122,6 +122,18 @@ fact stateTransition {
   }
 }
 
+fact BoardIsNotDegenerate {
+	numCol >= 2
+	numRow >= 2
+}
+
+assert OneMoveAssertion {
+	all s, s': State| some disj w, w': Window |
+		movePiece[s, s'] implies (getItem[w, s] = getItem[w', s'] and getItem[w', s] = getItem[w, s']) 
+}
+
+check OneMoveAssertion for 9 but 2 State, 5 int
+
 // This example should show a sequence of states from the initial board
 pred SolveProblem {
 	// Initial state is the following "initial" state
