@@ -125,10 +125,20 @@ fact stateTransition {
 // This example should show a sequence of states from the initial board
 pred SolveProblem {
 	// Initial state is the following "initial" state
-	//some s: State| {
-	// s = ord/first
-	// We could specify the initial board state here
-	//}
+	/*some s: State| {
+	* 	s = ord/first
+	* 	all w: Window {
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 3
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 2
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 1
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 4
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 5
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 6
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 7
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 8
+	*		(w.posRow = 1 and w.getCol = 1) implies getItem[w, s] = 9 // numRow * numCol is the blank space
+	*	}
+	*}*/
 
 	LastStateIsSolved
 
