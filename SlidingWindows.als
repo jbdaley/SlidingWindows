@@ -140,12 +140,12 @@ assert OneItemPerState {
 check OneItemPerState for 9 Window, 2 State, 5 int
 
 // This example should show a sequence of states from the initial board
-pred SolveProblem {
+pred SolveProblemFromInitialState {
 	// Initial state is the following "initial" state
 	some s: State| {
 	 	s = ord/first
 	 	all w: Window {
-			(w.posRow = 1 and w.posCol = 1) implies getItem[w, s] = 9
+			(w.posRow = 1 and w.posCol = 1) implies getItem[w, s] = 9 // numRow * numCol is the blank space
 			(w.posRow = 1 and w.posCol = 2) implies getItem[w, s] = 1
 			(w.posRow = 1 and w.posCol = 3) implies getItem[w, s] = 2
 			(w.posRow = 2 and w.posCol = 1) implies getItem[w, s] = 5
@@ -153,7 +153,7 @@ pred SolveProblem {
 			(w.posRow = 2 and w.posCol = 3) implies getItem[w, s] = 3
 			(w.posRow = 3 and w.posCol = 1) implies getItem[w, s] = 4
 			(w.posRow = 3 and w.posCol = 2) implies getItem[w, s] = 7
-			(w.posRow = 3 and w.posCol = 3) implies getItem[w, s] = 8 // numRow * numCol is the blank space
+			(w.posRow = 3 and w.posCol = 3) implies getItem[w, s] = 8
 		}
 	}
 
@@ -163,4 +163,15 @@ pred SolveProblem {
 	numRow = 3
 }
 
-run SolveProblem for 9 Window, 9 State, 5 int
+run SolveProblemFromInitialState for 9 Window, 9 State, 5 int
+
+
+// This example should show a sequence of states from any state 9 moves from the solution state.
+pred SolveProblemFromRandomState {
+	LastStateIsSolved
+
+	numCol = 3
+	numRow = 3
+}
+
+run SolveProblemFromRandomState for 9 Window, 9 State, 5 int
