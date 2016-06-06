@@ -36,7 +36,7 @@ fact NeighborIsReflexive {
 	neighbor = ~neighbor
 }
 
-fact NeighborsAreSomething {
+fact NeighborsDefinition {
 	// Windows that are next to each other are neighbors
 	// (-1 + 1) doesn't mean what it looks like. Remember + means set union.
 	all disj x,y: Window| {
@@ -122,6 +122,7 @@ fact stateTransition {
   }
 }
 
+// The definition of neighbors assumes that the board is not degenerate.
 fact BoardIsNotDegenerate {
 	numCol >= 2
 	numRow >= 2
