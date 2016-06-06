@@ -24,6 +24,14 @@ fun getItem[w: Window, s: State]: set Int {
 	w.item[s]
 }
 
+fun numRows[]: one Int {
+	GameBoard.row
+}
+
+fun numCol[]: one Int {
+	GameBoard.column
+}
+
 fact NeighborIsReflexive {
 	neighbor = ~neighbor
 }
@@ -36,17 +44,17 @@ fact NeighborsAreSomething {
 		(x.posCol = y.posCol and x.posRow fun/sub y.posRow in (-1 + 1)) implies (x -> y) in neighbor
 	}
 
-	// (1 + GameBoard.row) doesn't mean what it looks like. Remember + means set union.
+	// (1 + numRow) doesn't mean what it looks like. Remember + means set union.
 	// Corner windows have 2 neighbors
-	all w: Window| (w.posRow in (1 + GameBoard.row) and w.posCol in (1 + GameBoard.column)) implies #w.neighbor = 2
+	all w: Window| (w.posRow in (1 + numRow) and w.posCol in (1 + numCol)) implies #w.neighbor = 2
 	// Edge windows that are not corners have 3 neighbors
-	all w: Window| ((w.posRow in (1 + GameBoard.row) and not w.posCol in (1 + GameBoard.column)) or  (not w.posRow in (1 + GameBoard.row) and w.posCol in (1 + GameBoard.column))) implies #w.neighbor = 3
+	all w: Window| ((w.posRow in (1 + numRow) and not w.posCol in (1 + numCol)) or  (not w.posRow in (1 + numRow) and w.posCol in (1 + numCol))) implies #w.neighbor = 3
 	// Interior windows have 4 neighbors
-	all w: Window| (not w.posRow in (1 + GameBoard.row) and not w.posCol in (1 + GameBoard.column)) implies #w.neighbor = 4
+	all w: Window| (not w.posRow in (1 + numRow) and not w.posCol in (1 + numCol)) implies #w.neighbor = 4
 }
 
 fact AllWindows {
-	#Window = GameBoard.row fun/mul GameBoard.column
+	#Window = numRow fun/mul numCol
 }
 
 fact WindowsHaveUniquePositionInBoard {
@@ -55,17 +63,17 @@ fact WindowsHaveUniquePositionInBoard {
 
 fact AllWindowsValidPosition {
 	all w: Window| {
-		w.posRow > 0 and w.posRow <= GameBoard.row
-	 	w.posCol > 0 and w.posCol <= GameBoard.column
+		w.posRow > 0 and w.posRow <= numRow
+	 	w.posCol > 0 and w.posCol <= numCol
 	}
 }
 
 fact AllNumbersInEachState {
-	all s: State| #getItem[Window, s] = GameBoard.row fun/mul GameBoard.column
+	all s: State| #getItem[Window, s] = numRow fun/mul numCol
 }
 
 fact AllNumbersInRange {
-	all s: State| all n: getItem[Window, s] | n > 0 and n <= (GameBoard.row fun/mul GameBoard.column)
+	all s: State| all n: getItem[Window, s] | n > 0 and n <= (numRow fun/mul numCol)
 }
 
 fact AllNumbersOnBoardUnique {
@@ -80,7 +88,7 @@ pred LastStateIsSolved {
 	one s: State| {
 		s = ord/last
 		all w: Window {
-			getItem[w, s] = ((w.posRow fun/sub 1) fun/mul GameBoard.column) fun/add w.posCol
+			getItem[w, s] = ((w.posRow fun/sub 1) fun/mul numCol) fun/add w.posCol
 		}
 	}	
 }
@@ -93,7 +101,7 @@ pred movePiece[board, board': State] {
 	// w is the empty window in board
 	one w: Window| {
 		// w is the empty tile
-		getItem[w, board] = GameBoard.row fun/mul GameBoard.column
+		getItem[w, board] = numRow fun/mul numCol
 		// x is one of the empty tiles neighbors
 		one x: w.neighbor| {
 			// In the next board, the tile x becomes empty (tile is slid to replace the previously empty window)
@@ -124,8 +132,8 @@ pred SolveProblem {
 
 	LastStateIsSolved
 
-	GameBoard.column = 3
-	GameBoard.row = 3
+	numCol = 3
+	numRow = 3
 }
 
 run SolveProblem for 9 but 2 State, 5 int
