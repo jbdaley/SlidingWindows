@@ -89,7 +89,7 @@ pred LastStateIsSolved {
 
 // This predicate determines how the next board in a sequence of moves (states) can be
 // as a result of the previous board
-pred movePiece[board, board': State] {
+pred MovePiece[board, board': State] {
 	// w is the empty window in board
 	one w: Window| {
 		// w is the empty tile
@@ -108,9 +108,9 @@ pred movePiece[board, board': State] {
 	}
 }
 
-fact stateTransition {
+fact StateTransition {
   all s: State, s': ord/next[s] {
-      movePiece[s, s']
+      MovePiece[s, s']
   }
 }
 
@@ -122,7 +122,7 @@ fact BoardIsNotDegenerate {
 
 assert OneMoveAssertion {
 	all s, s': State| some disj w, w': Window |
-		movePiece[s, s'] implies (getItem[w, s] = getItem[w', s'] and getItem[w', s] = getItem[w, s']) 
+		MovePiece[s, s'] implies (getItem[w, s] = getItem[w', s'] and getItem[w', s] = getItem[w, s']) 
 }
 
 check OneMoveAssertion for 9 but 2 State, 5 int
