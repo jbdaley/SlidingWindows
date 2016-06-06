@@ -24,7 +24,7 @@ fun getItem[w: Window, s: State]: set Int {
 	w.item[s]
 }
 
-fun numRows[]: one Int {
+fun numRow[]: one Int {
 	GameBoard.row
 }
 
