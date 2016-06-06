@@ -32,10 +32,6 @@ fun numCol[]: one Int {
 	GameBoard.column
 }
 
-fact NeighborIsReflexive {
-	neighbor = ~neighbor
-}
-
 fact NeighborsDefinition {
 	// Windows that are next to each other are neighbors
 	// (-1 + 1) doesn't mean what it looks like. Remember + means set union.
@@ -84,6 +80,8 @@ fact ItemCardinality {
 	all w: Window| #w.item = #State
 }
 
+// The dynamic parts...
+
 pred LastStateIsSolved {
 	one s: State| {
 		s = ord/last
@@ -92,8 +90,6 @@ pred LastStateIsSolved {
 		}
 	}	
 }
-
-// The dynamic parts...
 
 // This predicate determines how the next board in a sequence of moves (states) can be
 // as a result of the previous board
@@ -134,6 +130,12 @@ assert OneMoveAssertion {
 }
 
 check OneMoveAssertion for 9 but 2 State, 5 int
+
+assert NeighborIsReflexive {
+	neighbor = ~neighbor
+}
+
+check NeighborIsReflexive for 9 but 2 State, 5 int
 
 // This example should show a sequence of states from the initial board
 pred SolveProblem {
